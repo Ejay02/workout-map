@@ -84,10 +84,59 @@ a:visited {
   border-left: 5px solid var(--color-brand--1);
 }
 
+/* .head {
+  display: flex;
+  align-items: center;
+}
+
+
+.buttons {
+  margin-left: auto;
+}
+
+.buttons button {
+  margin-left: 0.5rem;
+} */
+
 .workout__title {
   font-size: 1.7rem;
   font-weight: 600;
   grid-column: 1 / -1;
+  display: flex;
+  /* margin-right: 5px; */
+}
+
+.btn {
+  justify-content: end;
+  /* padding: 5px; */
+  margin-left: 20px;
+  display: flex;
+}
+
+.edit {
+  margin-right: 2px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+  background-color: #2d3439;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.edit:hover {
+  background-color: #2980b9;
+}
+
+.del {
+  padding: 2px;
+  margin: 2px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: crimson;
+  transition: background-color 0.3s ease;
+}
+
+.del:hover {
+  background-color: red;
 }
 
 .workout__details {

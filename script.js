@@ -7,6 +7,8 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+// const edit = document.querySelector('.edit');
+// const del = document.querySelector('.delete');
 
 function generateRandomUUID() {
   var uuid = '';
@@ -48,8 +50,8 @@ class Workout {
     } ${this.date.getDate()}`;
   }
 
-  click(){
-    this.clicks++
+  click() {
+    this.clicks++;
   }
 }
 
@@ -63,9 +65,8 @@ class Running extends Workout {
   }
 
   calcPace() {
-    // min/km
     this.pace = this.duration / this.distance;
-    return this.pace;
+    return this.pace; // min/km
   }
 }
 class Cycling extends Workout {
@@ -78,8 +79,7 @@ class Cycling extends Workout {
   }
 
   calcSpeed() {
-    //km/h
-    this.speed = this.distance / (this.duration / 60);
+    this.speed = this.distance / (this.duration / 60); //km/h
 
     return this.speed;
   }
@@ -93,13 +93,19 @@ class App {
   #workouts = [];
 
   constructor() {
-    this._getPositon();
+    this._getPositon(); //get position
 
+    this._getLocalStorage(); //get data from local storage
+
+    // attach event handlers
     form.addEventListener('submit', this._newWorkout.bind(this));
 
     inputType.addEventListener('change', this._toggleElevationField);
 
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+
+    containerWorkouts.addEventListener('click', this._editWorkout.bind(this));
+    containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this));
   }
 
   _getPositon() {
@@ -129,6 +135,10 @@ class App {
 
     // handle clicks on map
     this.#map.on('click', this._showForm.bind(this));
+
+    this.#workouts.forEach(work => {
+      this._renderWorkoutMarker(work);
+    });
   }
 
   _showForm(mapE) {
@@ -207,6 +217,9 @@ class App {
 
     //clear input fields + hideform
     this._hideForm();
+
+    //set local storage for all workouts
+    this._setLocalStorage();
   }
 
   // Display marker
@@ -231,7 +244,17 @@ class App {
   _renderWorkout(workout) {
     let html = `
     <li class="workout workout--${workout.type}" data-id="${workout.id}">
-      <h2 class="workout__title">${workout.description}</h2>
+       <span class="workout__title">
+       <div>
+       <h2 >${workout.description}</h2>
+       </div>
+       <div class='btn'>
+       <button class='edit' data-id="${workout.id}">Edit</button>
+        <button class='del' data-id="${workout.id}">Delete</button>
+       </div>
+       </span>
+      
+      
         <div class="workout__details">
           <span class="workout__icon">${
             workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'
@@ -295,7 +318,59 @@ class App {
     });
 
     // using public interface
-    workout.click()
+    // workout.click();
+  }
+
+  _setLocalStorage() {
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+  }
+
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workouts'));
+    if (!data) return;
+
+    this.#workouts = data;
+
+    this.#workouts.forEach(work => {
+      this._renderWorkout(work);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem('workouts');
+    location.reload();
+  }
+
+  _editWorkout(e) {
+    const editBtn = e.target.closest('.edit');
+    if (!editBtn) return;
+
+    const workoutId = editBtn.dataset.id;
+    const workout = this.#workouts.find(work => work.id === workoutId);
+
+    // Logic to edit the workout using the workout object
+
+    console.log('Edit workout:', workout);
+  }
+
+  _deleteWorkout(e) {
+    const deleteBtn = e.target.closest('.del');
+    if (!deleteBtn) return;
+
+    const workoutId = deleteBtn.dataset.id;
+    const workoutIndex = this.#workouts.findIndex(
+      work => work.id === workoutId
+    );
+
+    // Remove the workout from the workouts array
+    this.#workouts.splice(workoutIndex, 1);
+
+    // Remove the workout from the UI
+    const workoutElement = deleteBtn.closest('.workout');
+    workoutElement.remove();
+
+    // Update local storage
+    this._setLocalStorage();
   }
 }
 
