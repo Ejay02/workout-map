@@ -104,7 +104,6 @@ class App {
 
     containerWorkouts.addEventListener('click', this._editWorkout.bind(this));
     containerWorkouts.addEventListener('click', this._deleteWorkout.bind(this));
-
   }
 
   _getPositon() {
@@ -359,6 +358,9 @@ class App {
     localStorage.removeItem('workouts');
     location.reload();
   }
+
+  // BUGS -- EDIT
+  // FIXME  /DELETE[remove pin on delete]
 
   _editWorkout(e) {
     const editBtn = e.target.closest('.edit');
