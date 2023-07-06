@@ -19,7 +19,7 @@ The Workout Map is a web application that allows you to track your running and c
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/workout-map.git
+git clone https://github.com/Ejay02/workout-map.git
 ```
 
 2. Open `index.html` in your web browser.
